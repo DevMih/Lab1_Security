@@ -2,11 +2,12 @@
 
 void Main()
 {
-    int m = (int)Math.Pow(2, 15) - 1;
-    int a = (int)Math.Pow(2, 3);
-    int c = 8;
-    int start = 64;
-    int number = 100;
+    uint m = (uint)Math.Pow(2, 31);
+    uint a = (uint)Math.Pow(2, 16);
+    uint c = 28657;
+    uint start = 33;
+    uint number = 100;
+
     string fileName = "output.txt";
 
     bool success = true;
@@ -100,26 +101,26 @@ void Main()
 
         if (success)
         {
-            double[] result = LinearPseudoGenerator(m, a, c, start, number);
+            ulong[] result = LinearPseudoGenerator(m, a, c, start, number);
 
             Console.Write("Sequence: ");
             File.AppendAllText(fileName, "Sequence: ");
-            foreach (double num in result)
+            foreach (ulong num in result)
             {
                 Console.Write(num + " ");
                 File.AppendAllText(fileName, num + " ");
             }
 
-            int period = FindPeriod(m, a, c, start);
+            int period = FindPeriod2(m, a, c, start);
             Console.WriteLine("\nPeriod: " + period);
             File.AppendAllText(fileName, "\nPeriod: " + period + "\n\n");
         }
     }
 }
 
-double[] LinearPseudoGenerator(double m, double a, double c, double start, int number)
+ulong[] LinearPseudoGenerator(uint m, uint a, uint c, uint start, uint number)
 {
-    double[] resultSequence = new double[number];
+    ulong[] resultSequence = new ulong[number];
     resultSequence[0] = start;
 
     for (int i = 1; i < number; i++)
@@ -130,23 +131,24 @@ double[] LinearPseudoGenerator(double m, double a, double c, double start, int n
     return resultSequence;
 }
 
-int FindPeriod(double m, double a, double c, double start)
+int FindPeriod(uint m, uint a, uint c, uint start)
 {
-    double next = start;
     int count = 0;
+
+    List<ulong> resultSequence = new List<ulong>();
+    ulong prev = start;
 
     do
     {
-        next = (a * next + c) % m;
+        resultSequence.Add(prev);
+        prev = (a * prev + c) % m;
         ++count;
-
-    } while (next != start);
+    } while (resultSequence.FindIndex(x => x == prev) < 0);
 
     return count;
 }
 
-
-bool ReadInt(ref int number)
+bool ReadInt(ref uint number)
 {
-    return Int32.TryParse(Console.ReadLine(), out number);
+    return UInt32.TryParse(Console.ReadLine(), out number);
 }
