@@ -11,8 +11,9 @@ void Main()
 
     bool success = true;
 
-    do
+    while(true)
     {
+        success = true;
         Console.WriteLine("Default - d | Custom - c | f- File | Exit - e");
         string? value = Console.ReadLine();
 
@@ -97,21 +98,23 @@ void Main()
                 break;
         }
 
-    } while (!success);
+        if (success)
+        {
+            double[] result = LinearPseudoGenerator(m, a, c, start, number);
 
-    double[] result = LinearPseudoGenerator(m, a, c, start, number);
+            Console.Write("Sequence: ");
+            File.AppendAllText(fileName, "Sequence: ");
+            foreach (double num in result)
+            {
+                Console.Write(num + " ");
+                File.AppendAllText(fileName, num + " ");
+            }
 
-    Console.Write("Sequence: ");
-    File.AppendAllText(fileName, "Sequence: ");
-    foreach (double num in result)
-    {
-        Console.Write(num + " ");
-        File.AppendAllText(fileName, num + " ");
+            int period = FindPeriod(m, a, c, start);
+            Console.WriteLine("\nPeriod: " + period);
+            File.AppendAllText(fileName, "\nPeriod: " + period + "\n\n");
+        }
     }
-
-    int period = FindPeriod(m, a, c, start);
-    Console.WriteLine("\nPeriod: " + period);
-    File.AppendAllText(fileName, "\nPeriod: " + period + "\n\n");
 }
 
 double[] LinearPseudoGenerator(double m, double a, double c, double start, int number)
@@ -145,28 +148,5 @@ int FindPeriod(double m, double a, double c, double start)
 
 bool ReadInt(ref int number)
 {
-    try
-    {
-        number = Int32.Parse(Console.ReadLine());
-    }
-    catch (Exception)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-bool ReadDouble(ref double number)
-{
-    try
-    {
-        number = Double.Parse(Console.ReadLine());
-    }
-    catch (Exception)
-    {
-        return false;
-    }
-
-    return true;
+    return Int32.TryParse(Console.ReadLine(), out number);
 }
